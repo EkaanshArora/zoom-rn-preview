@@ -115,7 +115,6 @@ const Call = () => {
 
   const leaveSession = () => {
     zoom.leaveSession(false);
-    setIsInSession(false);
     listeners.current.forEach((listener) => listener.remove());
     listeners.current = [];
   };
@@ -132,7 +131,6 @@ const Call = () => {
           />
         </View>
       ))}
-      <MuteButtons isAudioMuted={isAudioMuted} isVideoMuted={isVideoMuted} />
       <Button
         title="Leave Session"
         color={"#f01040"}
@@ -147,46 +145,15 @@ const Call = () => {
       <Text style={styles.heading}>React Native Quickstart</Text>
       <View style={styles.spacer} />
       <View style={{ alignItems: "center" }}>
+        <Text>Preview:</Text>
+        <ZoomView
+          // userId={null}
+          style={{ width: 500, height: 500 }}
+          preview
+          fullScreen
+        />
         <Button title="Join Session" onPress={join} />
       </View>
-    </View>
-  );
-};
-
-const MuteButtons = ({
-  isAudioMuted,
-  isVideoMuted,
-}: {
-  isAudioMuted: boolean;
-  isVideoMuted: boolean;
-}) => {
-  const zoom = useZoom();
-  const onPressAudio = async () => {
-    const mySelf = await zoom.session.getMySelf();
-    const muted = await mySelf.audioStatus.isMuted();
-    muted
-      ? await zoom.audioHelper.unmuteAudio(mySelf.userId)
-      : await zoom.audioHelper.muteAudio(mySelf.userId);
-  };
-
-  const onPressVideo = async () => {
-    const mySelf = await zoom.session.getMySelf();
-    const videoOn = await mySelf.videoStatus.isOn();
-    videoOn
-      ? await zoom.videoHelper.stopVideo()
-      : await zoom.videoHelper.startVideo();
-  };
-  return (
-    <View style={{ flexDirection: "row", justifyContent: "center", margin: 8 }}>
-      <Button
-        title={isAudioMuted ? "Unmute Audio" : "Mute Audio"}
-        onPress={onPressAudio}
-      />
-      <View style={styles.spacer} />
-      <Button
-        title={isVideoMuted ? "Unmute Video" : "Mute Video"}
-        onPress={onPressVideo}
-      />
     </View>
   );
 };
